@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { TextField, Button, Grid, Card, CardMedia } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 const ImageSearch = ({ setSelectedImage }) => {
     const navigate = useNavigate();
     const [query, setQuery] = useState("");
+    const [error, setError] = useState(null);
     const [images, setImages] = useState([]);
     const apiUrl = import.meta.env.VITE_APP_API_URL;
     const unsplashKey = import.meta.env.VITE_UNSPLASH_API_KEY;
-
     const fetchImages = async () => {
         try {
             const response = await axios.get(`${apiUrl}/search/photos`, {
@@ -19,6 +18,7 @@ const ImageSearch = ({ setSelectedImage }) => {
             setImages(response.data.results);
         } catch (error) {
             console.error("Error fetching images:", error);
+            setError(error);
         }
     };
 
@@ -35,7 +35,6 @@ const ImageSearch = ({ setSelectedImage }) => {
             <Button variant="contained" color="primary" onClick={fetchImages}>
                 Search
             </Button>
-
             <Grid container spacing={10} style={{ marginTop: "20px" }}>
                 {images.map((image) => (
                     <Grid item xs={4} sm={4} md={4} lg={4} key={image.id}>
@@ -63,6 +62,7 @@ const ImageSearch = ({ setSelectedImage }) => {
                     </Grid>
                 ))}
             </Grid>
+            {error && <p style={{color:"#c11", fontWeight:"600"}}>Error: {error.message}</p>}
         </div>
     );
 };

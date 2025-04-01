@@ -1,19 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, List, ListItem, Typography } from "@mui/material";
 import { fabric } from "fabric";
-import { useNavigate } from "react-router-dom"; // Add navigation
+import { useNavigate } from "react-router-dom";
 
 const ImageEditor = ({ imageUrl }) => {
     const canvasRef = useRef(null);
     const fabricCanvasRef = useRef(null);
     const [canvasLayers, setCanvasLayers] = useState([]);
-    const navigate = useNavigate(); // For closing editor
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Use imageUrl directly, falling back to localStorage if needed
         const savedImageUrl = imageUrl || localStorage.getItem("selectedImage");
-
-        // Initialize canvas only if it doesn’t exist
         if (!fabricCanvasRef.current) {
             const canvas = new fabric.Canvas(canvasRef.current, {
                 width: 500,
@@ -29,12 +26,8 @@ const ImageEditor = ({ imageUrl }) => {
         }
 
         const canvas = fabricCanvasRef.current;
-
-        // Clear the canvas before adding a new image
         canvas.clear();
         canvas.setBackgroundColor("lightgray", canvas.renderAll.bind(canvas));
-
-        // Load the image if available
         if (savedImageUrl) {
             fabric.Image.fromURL(
                 savedImageUrl,
@@ -53,14 +46,13 @@ const ImageEditor = ({ imageUrl }) => {
             );
         }
 
-        // Cleanup on unmount
         return () => {
             if (fabricCanvasRef.current) {
                 fabricCanvasRef.current.dispose();
                 fabricCanvasRef.current = null;
             }
         };
-    }, [imageUrl]); // Dependency on imageUrl
+    }, [imageUrl]);
 
     const updateLayers = () => {
         const canvas = fabricCanvasRef.current;
@@ -173,8 +165,8 @@ const ImageEditor = ({ imageUrl }) => {
     };
 
     const handleClose = () => {
-        localStorage.removeItem("selectedImage"); // Clear saved image
-        navigate("/"); // Navigate back to search
+        localStorage.removeItem("selectedImage"); 
+        navigate("/"); 
     };
 
     return (
